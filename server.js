@@ -3,15 +3,31 @@ import express from 'express'
 import { connectDB } from './src/config/mongodb.js'
 import { env } from './src/config/env.js'
 
-const app = express()
+import { BoardModel } from './src/models/board.model.js'
 
-connectDB().catch(console.log)
+connectDB()
+    .then(() => { console.log('Connected success database!') })
+    .then(() => bootServer())
+    .catch(error => {
+        console.log(error)
+        process.exit(1)
+    })
 
-app.get('/', (req, res) => {
-    res.send('<h1>Hello World</h1>')
-})
+//Khởi động server
+const bootServer = () => {
+    const app = express()
+    app.get('/test', async (req, res) => {
+        const fakeData = {
+            title: '11111'
+        }
+        const newBoard = await BoardModel.createNew(fakeData)
+        console.log(newBoard)
+        res.send('Insert success!!')
+    })
 
-app.listen(env.PORT, env.HOST_NAME, () => {
-    console.log(`Running ${env.HOST_NAME}:${env.PORT}`)
-})
+    app.listen(env.APP_PORT, env.APP_HOST, () => {
+        console.log(`Running ${env.APP_HOST}:${env.APP_PORT}`)
+    })
+}
+
 
