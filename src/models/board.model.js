@@ -3,7 +3,7 @@ import { getDB } from '../config/mongodb.js'
 
 const collectionName = 'boards'
 const boardSchema = Joi.object({
-    title: Joi.string().required().min(3).max(20),
+    title: Joi.string().required().min(12).max(20),
     columnOrder: Joi.array().items(Joi.string()).default([]),
     createdAt: Joi.date().timestamp().default(Date.now()),
     updatedAt: Joi.date().timestamp().default(null),
@@ -21,7 +21,7 @@ const createNew = async (data) => {
         const record = await getDB().collection(collectionName).find({ _id: result.insertedId })
         return record
     } catch (error) {
-        console.log(error)
+        throw new Error(error)
     }
 }
 
