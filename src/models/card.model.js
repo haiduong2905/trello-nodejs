@@ -5,7 +5,7 @@ const collectionName = 'cards'
 const cardSchema = Joi.object({
     boardId: Joi.string().required(),
     columnId: Joi.string().required(),
-    title: Joi.string().required().min(3).max(20),
+    title: Joi.string().required().min(3).max(100),
     cover: Joi.string().default(null),
     createdAt: Joi.date().timestamp().default(Date.now()),
     updatedAt: Joi.date().timestamp().default(null),
@@ -23,7 +23,7 @@ const createNew = async (data) => {
         const record = await getDB().collection(collectionName).find({ _id: result.insertedId })
         return record
     } catch (error) {
-        console.log(error)
+        throw new Error(error)
     }
 }
 
