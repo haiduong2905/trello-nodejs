@@ -1,4 +1,5 @@
 import Joi from 'joi'
+import { ObjectID } from 'bson'
 import { getDB } from '../config/mongodb.js'
 
 const collectionName = 'columns'
@@ -22,8 +23,21 @@ const createNew = async (data) => {
         const record = await getDB().collection(collectionName).find({ _id: result.insertedId })
         return record
     } catch (error) {
-        console.log(error)
+        throw new Error(error)
+    }
+}
+const update = async (id, data) => {
+    try {
+        const result = await getDB().collection(collectionName).findOneAndUpdate(
+            { _id: ObjectID(id) },
+            { $set: data },
+            { returnOriginal: false }
+        )
+        console.log(result)
+        return result.value
+    } catch (error) {
+        throw new Error(error)
     }
 }
 
-export const ColumnModel = { createNew }
+export const ColumnModel = { createNew, update }
